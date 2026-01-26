@@ -20,8 +20,18 @@ jobs:
 
       - name: Verify dependencies resolved
         run: |
-          flutter pub deps | grep -E "(provider|url_launcher|share_plus)"
-          # Fails build if any dependency missing
+			if ! flutter pub deps | grep -q "provider"; then
+			  echo "ERROR: provider not found in dependencies"
+			  exit 1
+			fi
+			if ! flutter pub deps | grep -q "url_launcher"; then
+			  echo "ERROR: url_launcher not found in dependencies"
+			  exit 1
+			fi
+			if ! flutter pub deps | grep -q "share_plus"; then
+			  echo "ERROR: share_plus not found in dependencies"
+			  exit 1
+			fi
 
       - name: Build APK
         run: flutter build apk --release
