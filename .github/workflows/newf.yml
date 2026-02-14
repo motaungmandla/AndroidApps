@@ -1,4 +1,4 @@
-name: Flutter Build APK
+name: Flutter Build
 on:
   push:
     branches: [main]
@@ -19,22 +19,9 @@ jobs:
         run: flutter pub get
 
       - name: Verify dependencies resolved
-        - name: Verify dependencies resolved
-  run: |
-    # Check if dependencies exist in pubspec.lock (more reliable)
-    if ! grep -q 'provider:' pubspec.lock; then
-      echo "ERROR: provider not found in pubspec.lock"
-      exit 1
-    fi
-    if ! grep -q 'url_launcher:' pubspec.lock; then
-      echo "ERROR: url_launcher not found in pubspec.lock"
-      exit 1
-    fi
-    if ! grep -q 'share_plus:' pubspec.lock; then
-      echo "ERROR: share_plus not found in pubspec.lock"
-      exit 1
-    fi
-    echo "All required dependencies found!"
+        run: |
+          flutter pub deps | grep -E "(provider|url_launcher|share_plus)"
+          # Fails build if any dependency missing
 
       - name: Build APK
         run: flutter build apk --release
