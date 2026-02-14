@@ -1,4 +1,5 @@
 name: Flutter Build
+
 on:
   push:
     branches: [main]
@@ -6,27 +7,34 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build-android:
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v4
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.38.7'  
+          flutter-version: '3.24.0'
+          channel: stable
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Verify dependencies resolved
+      - name: Verify clean dependencies
         run: |
-          flutter pub deps | grep -E "(provider|url_launcher|share_plus)"
-          # Fails build if any dependency missing
+          echo "🔍 Checking for forbidden dependencies..."
+          if flutter pub deps | grep -qE "(provider|url_launcher|share_plus)"; then
+            echo "❌ FAIL: Found external dependencies not needed for this app"
+            exit 1
+          else
+            echo "✅ Clean dependency tree — only Flutter SDK used"
+          fi
 
       - name: Build APK
-        run: flutter build apk --release
+        run: flutter build apk --release --no-tree-shake-icons
 
       - uses: actions/upload-artifact@v4
         with:
-          name: apk
+          name: mineral-atlas-apk
           path: build/app/outputs/flutter-apk/app-release.apk

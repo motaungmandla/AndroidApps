@@ -1,11 +1,10 @@
 name: lesotho_mineral_atlas
 description: Mineral consulting app by Phala & Motaung
-
 publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.10.0 <4.0.0'
+  sdk: '>=3.5.0 <4.0.0'  # ✅ FIXED: Matches Flutter 3.24.0's Dart 3.5.0
 
 dependencies:
   flutter:
