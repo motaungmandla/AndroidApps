@@ -1,5 +1,5 @@
-name: lesotho_mineral_atlas
-description: Alliance Demo Hub - Motaung Mandla Portfolio
+name: "Motaung demo"
+description: "Motaung Mandla Portfolio"
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -9,7 +9,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # ✅ NO EXTERNAL PACKAGES - Pure Flutter SDK only!
+  # ✅ State Management
+  provider: ^6.1.1
+  # ✅ Launch external URLs
+  url_launcher: ^6.2.4
+  # ✅ Native sharing
+  share_plus: ^7.2.1
 
 dev_dependencies:
   flutter_test:
