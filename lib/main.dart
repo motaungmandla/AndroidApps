@@ -1,20 +1,10 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // ✅ For Clipboard
-import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:flutter/services.dart'; // ✅ Built-in: Clipboard
+// ❌ REMOVED: provider, url_launcher, share_plus imports
 
 void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => VisitTracker()),
-      ],
-      child: const AllianceDemoHub(),
-    ),
-  );
+  runApp(const AllianceDemoHub());
 }
 
 class AllianceDemoHub extends StatelessWidget {
@@ -22,57 +12,52 @@ class AllianceDemoHub extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
-        return MaterialApp(
-          title: 'Alliance Demo Hub',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primarySwatch: Colors.red,
-            primaryColor: Colors.red[700],
-            useMaterial3: true,
-            scaffoldBackgroundColor: Colors.white,
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.red[700]!,
-              primary: Colors.red[700]!,
-              secondary: Colors.red[400]!,
-            ),
-            appBarTheme: AppBarTheme(
-              backgroundColor: Colors.red[700],
-              foregroundColor: Colors.white,
-              elevation: 0,
-            ),
-            cardTheme: CardThemeData(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
+    return MaterialApp(
+      title: 'Alliance Demo Hub',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+        primaryColor: Colors.red[700],
+        useMaterial3: true,
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.red[700]!,
+          primary: Colors.red[700]!,
+          secondary: Colors.red[400]!,
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.red[700],
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+        cardTheme: CardThemeData(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          darkTheme: ThemeData.dark().copyWith(
-            scaffoldBackgroundColor: const Color(0xFF121212),
-            cardColor: const Color(0xFF1E1E1E),
-            primaryColor: Colors.red[700],
-            colorScheme: ColorScheme.dark(
-              primary: Colors.red[400]!,
-              secondary: Colors.red[300]!,
-            ),
-            appBarTheme: const AppBarTheme(
-              backgroundColor: Color(0xFF8B0000),
-              foregroundColor: Colors.white,
-              elevation: 0,
-            ),
-            cardTheme: CardThemeData(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
+        ),
+      ),
+      darkTheme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        cardColor: const Color(0xFF1E1E1E),
+        primaryColor: Colors.red[700],
+        colorScheme: ColorScheme.dark(
+          primary: Colors.red[400]!,
+          secondary: Colors.red[300]!,
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF8B0000),
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+        cardTheme: CardThemeData(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          themeMode: themeProvider.themeMode,
-          home: const HomeScreen(),
-        );
-      },
+        ),
+      ),
+      home: const HomeScreen(),
     );
   }
 }
@@ -100,11 +85,14 @@ class Website {
   });
 }
 
-// ===== VISIT TRACKER =====
-class VisitTracker with ChangeNotifier {
+// ===== SIMPLE STATE WITH VALUENOTIFIER (Built-in) =====
+class AppState extends ValueNotifier<int> {
   int totalVisits = 0;
   int totalShares = 0;
-  int totalCopies = 0; // ✅ Track copy events
+  int totalCopies = 0;
+  bool isDarkMode = false;
+
+  AppState() : super(0);
 
   void recordVisit() {
     totalVisits++;
@@ -120,16 +108,9 @@ class VisitTracker with ChangeNotifier {
     totalCopies++;
     notifyListeners();
   }
-}
-
-// ===== THEME PROVIDER =====
-class ThemeProvider with ChangeNotifier {
-  ThemeMode _themeMode = ThemeMode.light;
-
-  ThemeMode get themeMode => _themeMode;
 
   void toggleTheme() {
-    _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    isDarkMode = !isDarkMode;
     notifyListeners();
   }
 }
@@ -143,6 +124,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final AppState appState = AppState();
+  
   final List<Website> websites = [
     Website(
       id: 0,
@@ -193,7 +176,6 @@ class _HomeScreenState extends State<HomeScreen> {
       category: 'AI/ML',
       badge: 'Needs Support',
     ),
-    // ✅ NEW: SeSoDa Dataset with YOUR paper link
     Website(
       id: 5,
       name: 'SeSoDa Dataset',
@@ -235,123 +217,127 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    final tracker = Provider.of<VisitTracker>(context);
-    final themeProvider = Provider.of<ThemeProvider>(context);
+  void dispose() {
+    appState.dispose();
+    super.dispose();
+  }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                Icons.shield,
-                color: Colors.red[700],
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: 8),
-            const Text('Alliance Demo Hub', style: TextStyle(fontWeight: FontWeight.bold)),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(themeProvider.themeMode == ThemeMode.dark 
-                ? Icons.wb_sunny 
-                : Icons.nightlight),
-            onPressed: () => themeProvider.toggleTheme(),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.red[700]!, Colors.red[400]!],
-              ),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.red.withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<int>(
+      valueListenable: appState,
+      builder: (context, _, __) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: appState.isDarkMode ? Colors.grey[800] : Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    Icons.shield,
+                    color: Colors.red[700],
+                    size: 24,
+                  ),
                 ),
+                const SizedBox(width: 8),
+                const Text('Alliance Demo Hub', style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
-            child: Column(
-              children: [
-                Row(
+            actions: [
+              IconButton(
+                icon: Icon(appState.isDarkMode ? Icons.wb_sunny : Icons.nightlight),
+                onPressed: () => appState.toggleTheme(),
+              ),
+            ],
+          ),
+          body: Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.red[700]!, Colors.red[400]!],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.red.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Column(
                   children: [
-                    Icon(Icons.favorite, color: Colors.white, size: 28),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Building AI for Sesotho Speakers',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                    Row(
+                      children: [
+                        Icon(Icons.favorite, color: Colors.white, size: 28),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Building AI for Sesotho Speakers',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'This role would fund my ASR project to deploy inclusive AI models for our nation.',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.95),
+                        fontSize: 13,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'This role would fund my ASR project to deploy inclusive AI models for our nation.',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.95),
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.red[50],
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.red[200]!),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildStat(Icons.link, 'Demos', websites.length.toString(), Colors.red[700]!),
-                _buildStat(Icons.remove_red_eye, 'Visits', tracker.totalVisits.toString(), Colors.red[700]!),
-                _buildStat(Icons.share, 'Shares', tracker.totalShares.toString(), Colors.red[700]!),
-                // ✅ Optional: Show copy stats too
-                // _buildStat(Icons.content_copy, 'Copies', tracker.totalCopies.toString(), Colors.red[700]!),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 0.85,
               ),
-              itemCount: websites.length,
-              itemBuilder: (context, index) {
-                return _buildCard(websites[index], tracker);
-              },
-            ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.red[50],
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.red[200]!),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildStat(Icons.link, 'Demos', websites.length.toString(), Colors.red[700]!),
+                    _buildStat(Icons.remove_red_eye, 'Visits', appState.totalVisits.toString(), Colors.red[700]!),
+                    _buildStat(Icons.share, 'Shares', appState.totalShares.toString(), Colors.red[700]!),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: GridView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 0.85,
+                  ),
+                  itemCount: websites.length,
+                  itemBuilder: (context, index) {
+                    return _buildCard(websites[index]);
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -386,14 +372,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildCard(Website site, VisitTracker tracker) {
+  Widget _buildCard(Website site) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
-        onTap: () async {
-          tracker.recordVisit();
-          await _launchUrl(site.url);
+        onTap: () {
+          appState.recordVisit();
+          _showLinkDialog(site.url);
         },
         borderRadius: BorderRadius.circular(16),
         child: Container(
@@ -481,7 +467,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                    // ✅ COPY BUTTON
+                    // ✅ COPY BUTTON (Built-in Clipboard)
                     IconButton(
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
@@ -489,7 +475,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: Icon(Icons.content_copy, size: 16, color: Colors.grey[600]),
                       onPressed: () async {
                         await Clipboard.setData(ClipboardData(text: site.url));
-                        tracker.recordCopy();
+                        appState.recordCopy();
                         if (mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -502,16 +488,22 @@ class _HomeScreenState extends State<HomeScreen> {
                         }
                       },
                     ),
-                    // ✅ SHARE BUTTON
+                    // ✅ SHARE BUTTON (Fallback: Copy + Instructions)
                     IconButton(
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                       splashRadius: 18,
                       icon: Icon(Icons.share, size: 16, color: Colors.grey[600]),
                       onPressed: () {
-                        tracker.recordShare();
-                        Share.share(
-                          'Check out ${site.name}: ${site.url}\n\nPart of Motaung Mandla\'s Alliance Insurance application portfolio.',
+                        appState.recordShare();
+                        Clipboard.setData(ClipboardData(text: site.url));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text('Link copied! Paste to share.'),
+                            backgroundColor: Colors.blue[700],
+                            duration: const Duration(seconds: 3),
+                            behavior: SnackBarBehavior.floating,
+                          ),
                         );
                       },
                     ),
@@ -525,29 +517,50 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<void> _launchUrl(String urlString) async {
-    try {
-      final uri = Uri.parse(urlString.trim());
-      if (uri.scheme.isEmpty) {
-        throw Exception('Invalid URL scheme');
-      }
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(
-          uri,
-          mode: LaunchMode.externalApplication,
-        );
-      } else {
-        throw Exception('Cannot launch URL');
-      }
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to open: ${e.toString()}'),
-          backgroundColor: Colors.red[700],
-          duration: const Duration(seconds: 3),
+  // ✅ REPLACES url_launcher: Show dialog with link + copy option
+  void _showLinkDialog(String url) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Open Link'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Tap to copy, then paste in your browser:'),
+            const SizedBox(height: 8),
+            SelectableText(
+              url,
+              style: TextStyle(
+                color: Colors.blue[700],
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          ],
         ),
-      );
-    }
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+          ElevatedButton.icon(
+            onPressed: () async {
+              await Clipboard.setData(ClipboardData(text: url));
+              if (mounted) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Link copied! Paste in browser to open.'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+            },
+            icon: const Icon(Icons.content_copy, size: 16),
+            label: const Text('Copy Link'),
+          ),
+        ],
+      ),
+    );
   }
 }
