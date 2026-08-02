@@ -116,90 +116,80 @@ class _HomeScreenState extends State<HomeScreen> {
   int totalVisits = 0;
 
   final List<AppItem> allItems = [
+    // Projects from resume
     AppItem(
       id: 0,
-      name: 'Alliance Insurance',
-      url: 'https://www.alliance.co.ls/',
-      description: 'Official Alliance Insurance Lesotho website',
-      icon: Icons.public,
-      color: Colors.red[700]!,
-      category: 'Official',
-      badge: 'Official',
-    ),
-    AppItem(
-      id: 1,
-      name: 'AI Chat Assistant',
-      url: 'https://huggingface.co/spaces/MandlaZwane/motaunginc',
-      description: 'Working contextual chatbot - see it in action!',
-      icon: Icons.chat_bubble,
-      color: Colors.red[700]!,
-      category: 'AI/ML',
-      badge: 'Live Demo',
-    ),
-    AppItem(
-      id: 2,
-      name: 'Sesotho ASR Project',
+      name: 'Sesotho ASR',
       url: 'https://github.com/motaungmandla',
-      description:
-          'Sesotho speech recognition - seeking funding to deploy for our nation',
+      description: 'Sesotho Automatic Speech Recognition - AI for African languages',
       icon: Icons.mic,
       color: Colors.orange,
       category: 'AI/ML',
-      badge: 'Research',
+      badge: 'Active',
     ),
     AppItem(
-      id: 3,
+      id: 1,
+      name: 'Algebraic Chatbot',
+      url: 'https://huggingface.co/spaces/MandlaZwane/motaunginc',
+      description: 'Contextual chatbot that solves algebra problems conversationally',
+      icon: Icons.chat_bubble,
+      color: Colors.red[700]!,
+      category: 'AI/ML',
+      badge: 'Live',
+    ),
+    AppItem(
+      id: 2,
       name: 'SeSoDa Dataset',
       url: 'https://upjournals.up.ac.za/index.php/dhasa/article/view/6742',
-      description: 'Sesotho Dataset for AI research - read our published paper',
+      description: 'Published academic paper - Sesotho Dataset for AI research',
       icon: Icons.dataset,
       color: Colors.green[700]!,
       category: 'Research',
       badge: 'Published',
     ),
+    // Development demos
     AppItem(
-      id: 4,
-      name: 'Lucky Bets Dev Demo',
+      id: 3,
+      name: 'Lucky Bets Demo',
       url: 'https://youtu.be/_gURXvlqRBc?si=X5WDj48xDzDm04fR',
-      description:
-          'Full-stack development demo showcasing real-time state management.',
+      description: 'Real-time state management showcase with smooth UI',
       icon: Icons.casino,
       color: Colors.amber[700]!,
       category: 'Development',
       badge: 'Demo',
     ),
     AppItem(
-      id: 5,
-      name: 'Coin Tossing Demo',
+      id: 4,
+      name: 'Coin Toss Demo',
       url: 'https://youtu.be/o3DjSXh-t_A?si=JG_vREmiP7GIGG0N',
-      description:
-          'Interactive probabilistic simulation demonstrating clean architecture.',
+      description: 'Probabilistic simulation with clean architecture',
       icon: Icons.flip,
       color: Colors.blueGrey,
       category: 'Development',
     ),
     AppItem(
-      id: 6,
+      id: 5,
       name: 'Horse Racing Demo',
       url: 'https://youtu.be/q5MzADBpOSA?si=5YdfZfcQBXfy-ffi',
-      description: 'Dynamic UI and event-driven architecture demonstration.',
+      description: 'Event-driven UI with real-time animations',
       icon: Icons.sports_score,
       color: Colors.teal,
       category: 'Development',
       badge: 'Interactive',
     ),
     AppItem(
-      id: 7,
+      id: 6,
       name: 'MovieTree API',
       url: 'https://movietree.vercel.app',
-      description: 'TheMovieDB API integration - proves API expertise',
+      description: 'TheMovieDB API integration - REST API expertise',
       icon: Icons.api,
       color: Colors.blue,
       category: 'Development',
       badge: 'API',
     ),
+    // Professional links
     AppItem(
-      id: 8,
+      id: 7,
       name: 'GitHub Profile',
       url: 'https://github.com/motaungmandla',
       description: 'Open source projects & AI models',
@@ -208,10 +198,19 @@ class _HomeScreenState extends State<HomeScreen> {
       category: 'Professional',
     ),
     AppItem(
+      id: 8,
+      name: 'Kaggle Profile',
+      url: 'https://kaggle.com',
+      description: 'Data science competitions & datasets',
+      icon: Icons.bar_chart,
+      color: Colors.indigo,
+      category: 'Professional',
+    ),
+    AppItem(
       id: 9,
       name: 'Contact Me',
       url: 'mailto:mandlamotaung89@gmail.com',
-      description: "Let's discuss how I can add value to your team",
+      description: 'mandlamotaung89@gmail.com | +266 63973129',
       icon: Icons.email,
       color: Colors.red[700]!,
       category: 'Professional',
@@ -279,6 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
+          // About Me Card - Updated with actual resume info
           Container(
             margin: const EdgeInsets.all(16),
             padding: const EdgeInsets.all(20),
@@ -324,7 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'BSc Math & CS @ NUL | AI Researcher',
+                        'BSc Math & CS @ NUL | AI & ML Intern',
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.9),
                           fontSize: 13,
@@ -341,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: const Text(
-                          'Publisher of SeSoDa Dataset',
+                          'SeSoDa Dataset Publisher',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 11,
@@ -360,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: TextField(
               onChanged: (val) => setState(() => _searchQuery = val),
               decoration: InputDecoration(
-                hintText: 'Search apps, projects, or links...',
+                hintText: 'Search projects, demos, or links...',
                 prefixIcon: Icon(Icons.search, color: subTextColor),
                 filled: true,
                 fillColor: isDark ? Colors.white10 : Colors.grey[100],
