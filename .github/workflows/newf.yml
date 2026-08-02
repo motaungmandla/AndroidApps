@@ -29,37 +29,28 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Show Flutter info
-        run: |
-          flutter doctor -v
-          flutter --version
-
       - name: Install dependencies
-        run: |
-          flutter pub get
-          echo "Dependencies installed successfully"
+        run: flutter pub get
 
-      - name: Analyze code
-        run: |
-          flutter analyze || echo "Analysis warnings (non-fatal)"
+      - name: Build Web (for GitHub Pages)
+        run: flutter build web --release
 
-      - name: Build Web
-        run: |
-          flutter build web --release --verbose
-          echo "Build completed"
-          
-      - name: Verify build output
-        run: |
-          ls -la build/web/
-          echo "Build output verified"
+      - name: Build APK (for Android download)
+        run: flutter build apk --release
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload artifact
+      - name: Upload web artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './build/web'
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: motaung-hub-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
 
   deploy:
     needs: build
