@@ -1,137 +1,57 @@
-name: Flutter CI/CD
+name: Flutter Build & Deploy
 
 on:
   push:
     branches:
       - main
-    tags:
-      - 'v*'
-
-  pull_request:
-    branches:
-      - main
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
 concurrency:
-  group: pages
+  group: "pages"
   cancel-in-progress: true
 
 jobs:
   build:
-    name: Build Flutter App
     runs-on: ubuntu-latest
-
-    outputs:
-      version: ${{ steps.version.outputs.version }}
-
+    
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Install Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.24.0"
+          flutter-version: '3.24.0'
           channel: stable
           cache: true
 
-      - name: Cache Pub Packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.pub-cache
-            .dart_tool
-          key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pub-
-
-      - name: Install Dependencies
+      - name: Install dependencies
         run: flutter pub get
 
-      - name: Check Formatting
-        run: dart format --output=none --set-exit-if-changed .
-
-      - name: Static Analysis
-        run: flutter analyze
-
-      - name: Run Tests
-        run: flutter test
-        continue-on-error: true
-
-      - name: Determine Version
-        id: version
-        run: |
-          VERSION=$(git describe --tags --always || echo "dev")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Build APK
-        run: flutter build apk --release
-
-      - name: Build App Bundle
-        run: flutter build appbundle --release
-
       - name: Build Web
-        run: flutter build web --release --base-href "/${{ github.event.repository.name }}/"
+        run: flutter build web --release
 
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: motaung-hub-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
 
-      - name: Upload AAB Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: motaung-hub-aab
-          path: build/app/outputs/bundle/release/app-release.aab
-
-      - name: Upload Website
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build/web
+          path: './build/web'
 
-  deploy-pages:
-    name: Deploy GitHub Pages
+  deploy:
     needs: build
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-
+    
     environment:
       name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     steps:
-      - name: Deploy Website
-        id: deploy
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
-
-  release:
-    name: GitHub Release
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Download APK
-        uses: actions/download-artifact@v4
-        with:
-          name: motaung-hub-apk
-
-      - name: Download AAB
-        uses: actions/download-artifact@v4
-        with:
-          name: motaung-hub-aab
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            app-release.apk
-            app-release.aab
-          generate_release_notes: true
