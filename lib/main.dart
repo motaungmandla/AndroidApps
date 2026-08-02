@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const AllianceDemoHub());
@@ -38,8 +37,8 @@ class _AllianceDemoHubState extends State<AllianceDemoHub> {
           primary: Colors.red[700]!,
           secondary: Colors.red[400]!,
         ),
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.red[700],
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFFB71C1C),
           foregroundColor: Colors.white,
           elevation: 0,
         ),
@@ -70,7 +69,11 @@ class _AllianceDemoHubState extends State<AllianceDemoHub> {
           ),
         ),
       ),
-      home: HomeScreen(onToggleTheme: toggleTheme),
+      // ✅ FIXED: Pass theme state down to HomeScreen
+      home: HomeScreen(
+        currentThemeMode: _themeMode,
+        onToggleTheme: toggleTheme,
+      ),
     );
   }
 }
@@ -100,8 +103,14 @@ class Website {
 
 // ===== HOME SCREEN =====
 class HomeScreen extends StatefulWidget {
+  final ThemeMode currentThemeMode;
   final VoidCallback onToggleTheme;
-  const HomeScreen({super.key, required this.onToggleTheme});
+  
+  const HomeScreen({
+    super.key, 
+    required this.currentThemeMode,
+    required this.onToggleTheme,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -250,7 +259,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(_themeMode == ThemeMode.dark ? Icons.wb_sunny : Icons.nightlight),
+            // ✅ FIXED: Now correctly uses widget.currentThemeMode
+            icon: Icon(widget.currentThemeMode == ThemeMode.dark ? Icons.wb_sunny : Icons.nightlight),
             onPressed: widget.onToggleTheme,
           ),
         ],
@@ -353,7 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: InkWell(
         onTap: () async {
           setState(() => totalVisits++);
-          await _launchUrl(site.url);
+          await _copyAndNotify(site.url, site.name);
         },
         borderRadius: BorderRadius.circular(16),
         child: Container(
@@ -410,25 +420,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Text(site.category,
                           style: TextStyle(color: Colors.grey[500], fontSize: 10, fontWeight: FontWeight.w500)),
                     ),
-                    // ✅ COPY BUTTON (Built-in, no external package needed)
                     IconButton(
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                       splashRadius: 18,
                       icon: Icon(Icons.content_copy, size: 16, color: Colors.grey[600]),
                       onPressed: () async {
-                        await Clipboard.setData(ClipboardData(text: site.url));
-                        setState(() => totalCopies++);
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('✓ Link copied!'),
-                              backgroundColor: Colors.green[700],
-                              duration: const Duration(seconds: 2),
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
-                        }
+                        await _copyAndNotify(site.url, site.name);
                       },
                     ),
                   ],
@@ -441,23 +439,18 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<void> _launchUrl(String urlString) async {
-    try {
-      final uri = Uri.parse(urlString.trim());
-      if (uri.scheme.isEmpty) throw Exception('Invalid URL scheme');
-      
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      } else {
-        throw Exception('Cannot launch URL');
-      }
-    } catch (e) {
-      if (!mounted) return;
+  // ✅ Built-in fallback for strict environments (Zero Dependencies)
+  Future<void> _copyAndNotify(String url, String name) async {
+    await Clipboard.setData(ClipboardData(text: url));
+    setState(() => totalCopies++);
+    
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to open: ${e.toString()}'),
-          backgroundColor: Colors.red[700],
-          duration: const Duration(seconds: 3),
+          content: Text('✓ $name link copied! Paste in browser.'),
+          backgroundColor: Colors.green[700],
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
         ),
       );
     }
