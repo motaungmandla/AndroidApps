@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
@@ -18,7 +17,8 @@ class _MotaungHubAppState extends State<MotaungHubApp> {
 
   void toggleTheme() {
     setState(() {
-      _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+      _themeMode =
+          _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     });
   }
 
@@ -27,15 +27,14 @@ class _MotaungHubAppState extends State<MotaungHubApp> {
     return MaterialApp(
       title: 'Motaung Hub',
       debugShowCheckedModeBanner: false,
-      // ✅ FORCES ENGLISH LOCALE (Prevents random Chinese characters)
-      locale: const Locale('en', 'US'), 
+      locale: const Locale('en', 'US'),
       themeMode: _themeMode,
       theme: ThemeData(
         primarySwatch: Colors.red,
         primaryColor: Colors.red[700],
         useMaterial3: true,
         scaffoldBackgroundColor: Colors.white,
-        fontFamily: 'Roboto', // ✅ Standard font to prevent rendering issues
+        fontFamily: 'Roboto',
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.red[700]!,
           primary: Colors.red[700]!,
@@ -75,7 +74,6 @@ class _MotaungHubAppState extends State<MotaungHubApp> {
   }
 }
 
-// ===== DATA MODEL =====
 class AppItem {
   final int id;
   final String name;
@@ -98,12 +96,15 @@ class AppItem {
   });
 }
 
-// ===== HOME SCREEN =====
 class HomeScreen extends StatefulWidget {
   final ThemeMode currentTheme;
   final VoidCallback onToggleTheme;
 
-  const HomeScreen({super.key, required this.currentTheme, required this.onToggleTheme});
+  const HomeScreen({
+    super.key,
+    required this.currentTheme,
+    required this.onToggleTheme,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -115,16 +116,106 @@ class _HomeScreenState extends State<HomeScreen> {
   int totalVisits = 0;
 
   final List<AppItem> allItems = [
-    AppItem(id: 0, name: 'Alliance Insurance', url: 'https://www.alliance.co.ls/', description: 'Official Alliance Insurance Lesotho website', icon: Icons.public, color: Colors.red[700]!, category: 'Official', badge: 'Official'),
-    AppItem(id: 1, name: 'AI Chat Assistant', url: 'https://huggingface.co/spaces/MandlaZwane/motaunginc', description: 'Working contextual chatbot - see it in action!', icon: Icons.chat_bubble, color: Colors.red[700]!, category: 'AI/ML', badge: 'Live Demo'),
-    AppItem(id: 2, name: 'Sesotho ASR Project', url: 'https://github.com/motaungmandla', description: 'Sesotho speech recognition - seeking funding to deploy for our nation', icon: Icons.mic, color: Colors.orange, category: 'AI/ML', badge: 'Research'),
-    AppItem(id: 3, name: 'SeSoDa Dataset', url: 'https://upjournals.up.ac.za/index.php/dhasa/article/view/6742', description: 'Sesotho Dataset for AI research - read & cite our published paper', icon: Icons.dataset, color: Colors.green[700]!, category: 'Research', badge: 'Published'),
-    AppItem(id: 4, name: 'Lucky Bets Dev Demo', url: 'https://youtu.be/_gURXvlqRBc?si=X5WDj48xDzDm04fR', description: 'Full-stack development demo showcasing real-time state management.', icon: Icons.casino, color: Colors.amber[700]!, category: 'Development', badge: 'Demo'),
-    AppItem(id: 5, name: 'Coin Tossing Demo', url: 'https://youtu.be/o3DjSXh-t_A?si=JG_vREmiP7GIGG0N', description: 'Interactive probabilistic simulation demonstrating clean architecture.', icon: Icons.flip, color: Colors.blueGrey, category: 'Development'),
-    AppItem(id: 6, name: 'Horse Racing Demo', url: 'https://youtu.be/q5MzADBpOSA?si=5YdfZfcQBXfy-ffi', description: 'Dynamic UI and event-driven architecture demonstration.', icon: Icons.sports_score, color: Colors.teal, category: 'Development', badge: 'Interactive'),
-    AppItem(id: 7, name: 'MovieTree API', url: 'https://movietree.vercel.app', description: 'TheMovieDB API integration - proves API expertise', icon: Icons.api, color: Colors.blue, category: 'Development', badge: 'API'),
-    AppItem(id: 8, name: 'GitHub Profile', url: 'https://github.com/motaungmandla', description: 'Open source projects & AI models', icon: Icons.code, color: Colors.grey[800]!, category: 'Professional'),
-    AppItem(id: 9, name: 'Contact Me', url: 'mailto:mandlamotaung89@gmail.com', description: 'Let\'s discuss how I can add value to your team', icon: Icons.email, color: Colors.red[700]!, category: 'Professional'),
+    AppItem(
+      id: 0,
+      name: 'Alliance Insurance',
+      url: 'https://www.alliance.co.ls/',
+      description: 'Official Alliance Insurance Lesotho website',
+      icon: Icons.public,
+      color: Colors.red[700]!,
+      category: 'Official',
+      badge: 'Official',
+    ),
+    AppItem(
+      id: 1,
+      name: 'AI Chat Assistant',
+      url: 'https://huggingface.co/spaces/MandlaZwane/motaunginc',
+      description: 'Working contextual chatbot - see it in action!',
+      icon: Icons.chat_bubble,
+      color: Colors.red[700]!,
+      category: 'AI/ML',
+      badge: 'Live Demo',
+    ),
+    AppItem(
+      id: 2,
+      name: 'Sesotho ASR Project',
+      url: 'https://github.com/motaungmandla',
+      description:
+          'Sesotho speech recognition - seeking funding to deploy for our nation',
+      icon: Icons.mic,
+      color: Colors.orange,
+      category: 'AI/ML',
+      badge: 'Research',
+    ),
+    AppItem(
+      id: 3,
+      name: 'SeSoDa Dataset',
+      url: 'https://upjournals.up.ac.za/index.php/dhasa/article/view/6742',
+      description: 'Sesotho Dataset for AI research - read our published paper',
+      icon: Icons.dataset,
+      color: Colors.green[700]!,
+      category: 'Research',
+      badge: 'Published',
+    ),
+    AppItem(
+      id: 4,
+      name: 'Lucky Bets Dev Demo',
+      url: 'https://youtu.be/_gURXvlqRBc?si=X5WDj48xDzDm04fR',
+      description:
+          'Full-stack development demo showcasing real-time state management.',
+      icon: Icons.casino,
+      color: Colors.amber[700]!,
+      category: 'Development',
+      badge: 'Demo',
+    ),
+    AppItem(
+      id: 5,
+      name: 'Coin Tossing Demo',
+      url: 'https://youtu.be/o3DjSXh-t_A?si=JG_vREmiP7GIGG0N',
+      description:
+          'Interactive probabilistic simulation demonstrating clean architecture.',
+      icon: Icons.flip,
+      color: Colors.blueGrey,
+      category: 'Development',
+    ),
+    AppItem(
+      id: 6,
+      name: 'Horse Racing Demo',
+      url: 'https://youtu.be/q5MzADBpOSA?si=5YdfZfcQBXfy-ffi',
+      description: 'Dynamic UI and event-driven architecture demonstration.',
+      icon: Icons.sports_score,
+      color: Colors.teal,
+      category: 'Development',
+      badge: 'Interactive',
+    ),
+    AppItem(
+      id: 7,
+      name: 'MovieTree API',
+      url: 'https://movietree.vercel.app',
+      description: 'TheMovieDB API integration - proves API expertise',
+      icon: Icons.api,
+      color: Colors.blue,
+      category: 'Development',
+      badge: 'API',
+    ),
+    AppItem(
+      id: 8,
+      name: 'GitHub Profile',
+      url: 'https://github.com/motaungmandla',
+      description: 'Open source projects & AI models',
+      icon: Icons.code,
+      color: Colors.grey[800]!,
+      category: 'Professional',
+    ),
+    AppItem(
+      id: 9,
+      name: 'Contact Me',
+      url: 'mailto:mandlamotaung89@gmail.com',
+      description: "Let's discuss how I can add value to your team",
+      icon: Icons.email,
+      color: Colors.red[700]!,
+      category: 'Professional',
+    ),
   ];
 
   List<String> get categories {
@@ -134,9 +225,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<AppItem> get filteredItems {
     return allItems.where((item) {
-      final matchesSearch = item.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          item.description.toLowerCase().contains(_searchQuery.toLowerCase());
-      final matchesCategory = _selectedCategory == 'All' || item.category == _selectedCategory;
+      final matchesSearch =
+          item.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+              item.description
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase());
+      final matchesCategory =
+          _selectedCategory == 'All' || item.category == _selectedCategory;
       return matchesSearch && matchesCategory;
     }).toList();
   }
@@ -153,21 +248,30 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Container(
               padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
               child: Icon(Icons.shield, color: Colors.red[700], size: 22),
             ),
             const SizedBox(width: 10),
-            const Text('Motaung Hub', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+            const Text(
+              'Motaung Hub',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
           ],
         ),
         actions: [
-          // ✅ Smooth Theme Toggle Animation
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
-            transitionBuilder: (child, animation) => RotationTransition(turns: animation, child: child),
+            transitionBuilder: (child, animation) =>
+                RotationTransition(turns: animation, child: child),
             child: IconButton(
               key: ValueKey(widget.currentTheme),
-              icon: Icon(isDark ? Icons.wb_sunny : Icons.nightlight, color: Colors.white),
+              icon: Icon(
+                isDark ? Icons.wb_sunny : Icons.nightlight,
+                color: Colors.white,
+              ),
               onPressed: widget.onToggleTheme,
             ),
           ),
@@ -175,44 +279,82 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          // ✅ NEW: About Me Hero Card (From your Resume)
           Container(
             margin: const EdgeInsets.all(16),
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [Colors.red[800]!, Colors.red[600]!]),
+              gradient: LinearGradient(
+                colors: [Colors.red[800]!, Colors.red[600]!],
+              ),
               borderRadius: BorderRadius.circular(20),
-              boxShadow: [BoxShadow(color: Colors.red.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 6))],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.red.withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
             child: Row(
               children: [
                 CircleAvatar(
                   radius: 32,
                   backgroundColor: Colors.white,
-                  child: Text('MM', style: TextStyle(color: Colors.red[800], fontWeight: FontWeight.bold, fontSize: 18)),
+                  child: Text(
+                    'MM',
+                    style: TextStyle(
+                      color: Colors.red[800],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Mandla Motaung', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+                      const Text(
+                        'Mandla Motaung',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
                       const SizedBox(height: 4),
-                      Text('BSc Math & CS @ NUL | AI Researcher', style: TextStyle(color: Colors.white.withOpacity(0.9), fontSize: 13)),
+                      Text(
+                        'BSc Math & CS @ NUL | AI Researcher',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.9),
+                          fontSize: 13,
+                        ),
+                      ),
                       const SizedBox(height: 6),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(8)),
-                        child: const Text('Publisher of SeSoDa Dataset', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w600)),
-                      )
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Text(
+                          'Publisher of SeSoDa Dataset',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
-
-          // ✅ NEW: Search Bar
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
@@ -222,15 +364,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 prefixIcon: Icon(Icons.search, color: subTextColor),
                 filled: true,
                 fillColor: isDark ? Colors.white10 : Colors.grey[100],
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 0),
               ),
             ),
           ),
-
           const SizedBox(height: 12),
-
-          // ✅ NEW: Category Filter Chips
           SizedBox(
             height: 40,
             child: ListView.builder(
@@ -248,43 +390,62 @@ class _HomeScreenState extends State<HomeScreen> {
                     onSelected: (_) => setState(() => _selectedCategory = cat),
                     backgroundColor: isDark ? Colors.white10 : Colors.grey[200],
                     selectedColor: Colors.red[700],
-                    labelStyle: TextStyle(color: isSelected ? Colors.white : textColor, fontWeight: FontWeight.w600),
+                    labelStyle: TextStyle(
+                      color: isSelected ? Colors.white : textColor,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 );
               },
             ),
           ),
-
           const SizedBox(height: 8),
-
-          // Stats Bar
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildStat(Icons.link, 'Total', filteredItems.length.toString(), Colors.red[700]!, isDark),
-                _buildStat(Icons.remove_red_eye, 'Visits', totalVisits.toString(), Colors.red[700]!, isDark),
+                _buildStat(
+                  Icons.link,
+                  'Total',
+                  filteredItems.length.toString(),
+                  Colors.red[700]!,
+                  isDark,
+                ),
+                _buildStat(
+                  Icons.remove_red_eye,
+                  'Visits',
+                  totalVisits.toString(),
+                  Colors.red[700]!,
+                  isDark,
+                ),
               ],
             ),
           ),
-
           const SizedBox(height: 8),
-
-          // Project Grid
           Expanded(
             child: filteredItems.isEmpty
-                ? Center(child: Text('No items found.', style: TextStyle(color: subTextColor)))
+                ? Center(
+                    child: Text(
+                      'No items found.',
+                      style: TextStyle(color: subTextColor),
+                    ),
+                  )
                 : GridView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
                       childAspectRatio: 0.85,
                     ),
                     itemCount: filteredItems.length,
-                    itemBuilder: (context, index) => _buildCard(filteredItems[index], isDark),
+                    itemBuilder: (context, index) =>
+                        _buildCard(filteredItems[index], isDark),
                   ),
           ),
         ],
@@ -292,17 +453,39 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildStat(IconData icon, String label, String value, Color color, bool isDark) {
+  Widget _buildStat(
+    IconData icon,
+    String label,
+    String value,
+    Color color,
+    bool isDark,
+  ) {
     return Column(
       children: [
         Container(
           padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
           child: Icon(icon, color: color, size: 22),
         ),
         const SizedBox(height: 4),
-        Text(value, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 18)),
-        Text(label, style: TextStyle(color: isDark ? Colors.white60 : Colors.black54, fontSize: 11)),
+        Text(
+          value,
+          style: TextStyle(
+            color: color,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            color: isDark ? Colors.white60 : Colors.black54,
+            fontSize: 11,
+          ),
+        ),
       ],
     );
   }
@@ -320,7 +503,14 @@ class _HomeScreenState extends State<HomeScreen> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             gradient: item.badge != null
-                ? LinearGradient(colors: [item.color.withOpacity(0.05), item.color.withOpacity(0.1)], begin: Alignment.topLeft, end: Alignment.bottomRight)
+                ? LinearGradient(
+                    colors: [
+                      item.color.withOpacity(0.05),
+                      item.color.withOpacity(0.1),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
                 : null,
           ),
           child: Padding(
@@ -332,29 +522,74 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(color: item.color.withOpacity(0.15), borderRadius: BorderRadius.circular(12)),
+                      decoration: BoxDecoration(
+                        color: item.color.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       child: Icon(item.icon, color: item.color, size: 24),
                     ),
                     const Spacer(),
                     if (item.badge != null)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(color: item.color, borderRadius: BorderRadius.circular(8)),
-                        child: Text(item.badge!, style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold)),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: item.color,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          item.badge!,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                   ],
                 ),
                 const SizedBox(height: 12),
-                Text(item.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: isDark ? Colors.white : Colors.black87), maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(
+                  item.name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 const SizedBox(height: 6),
-                Text(item.description, style: TextStyle(color: isDark ? Colors.white70 : Colors.black54, fontSize: 11, height: 1.3), maxLines: 3, overflow: TextOverflow.ellipsis),
+                Text(
+                  item.description,
+                  style: TextStyle(
+                    color: isDark ? Colors.white70 : Colors.black54,
+                    fontSize: 11,
+                    height: 1.3,
+                  ),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 const Spacer(),
                 Row(
                   children: [
                     Expanded(
-                      child: Text(item.category, style: TextStyle(color: isDark ? Colors.white54 : Colors.black45, fontSize: 10, fontWeight: FontWeight.w500)),
+                      child: Text(
+                        item.category,
+                        style: TextStyle(
+                          color: isDark ? Colors.white54 : Colors.black45,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
-                    Icon(Icons.open_in_new, size: 16, color: isDark ? Colors.white54 : Colors.black45),
+                    Icon(
+                      Icons.open_in_new,
+                      size: 16,
+                      color: isDark ? Colors.white54 : Colors.black45,
+                    ),
                   ],
                 ),
               ],
@@ -365,23 +600,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-    // ✅ PROPER URL LAUNCHER (Opens in browser)
   Future<void> _launchUrl(String urlString) async {
     try {
       final uri = Uri.parse(urlString.trim());
-      
-      // Validate the URL scheme
       if (!uri.hasScheme) {
-        throw Exception('Invalid URL: missing scheme (http/https)');
+        throw Exception('Invalid URL: missing scheme');
       }
-      
+
       if (await canLaunchUrl(uri)) {
-        await launchUrl(
-          uri,
-          mode: LaunchMode.externalApplication, // Opens in user's default browser
-        );
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
       } else {
-        // Fallback: Try platform default if canLaunchUrl fails
         await launchUrl(uri, mode: LaunchMode.platformDefault);
       }
     } catch (e) {
@@ -396,3 +624,4 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
   }
+}
