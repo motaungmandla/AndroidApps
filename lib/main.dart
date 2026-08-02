@@ -17,8 +17,7 @@ class _MotaungHubAppState extends State<MotaungHubApp> {
 
   void toggleTheme() {
     setState(() {
-      _themeMode =
-          _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+      _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     });
   }
 
@@ -27,14 +26,12 @@ class _MotaungHubAppState extends State<MotaungHubApp> {
     return MaterialApp(
       title: 'Motaung Hub',
       debugShowCheckedModeBanner: false,
-      locale: const Locale('en', 'US'),
+      locale: const Locale('en', 'US'), // ✅ Prevents weird character fallbacks
       themeMode: _themeMode,
       theme: ThemeData(
         primarySwatch: Colors.red,
-        primaryColor: Colors.red[700],
         useMaterial3: true,
         scaffoldBackgroundColor: Colors.white,
-        fontFamily: 'Roboto',
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.red[700]!,
           primary: Colors.red[700]!,
@@ -53,8 +50,6 @@ class _MotaungHubAppState extends State<MotaungHubApp> {
       darkTheme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color(0xFF121212),
         cardColor: const Color(0xFF1E1E1E),
-        primaryColor: Colors.red[700],
-        fontFamily: 'Roboto',
         colorScheme: ColorScheme.dark(
           primary: Colors.red[400]!,
           secondary: Colors.red[300]!,
@@ -116,7 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int totalVisits = 0;
 
   final List<AppItem> allItems = [
-    // Projects from resume
     AppItem(
       id: 0,
       name: 'Sesotho ASR',
@@ -147,7 +141,6 @@ class _HomeScreenState extends State<HomeScreen> {
       category: 'Research',
       badge: 'Published',
     ),
-    // Development demos
     AppItem(
       id: 3,
       name: 'Lucky Bets Demo',
@@ -187,7 +180,6 @@ class _HomeScreenState extends State<HomeScreen> {
       category: 'Development',
       badge: 'API',
     ),
-    // Professional links
     AppItem(
       id: 7,
       name: 'GitHub Profile',
@@ -200,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
     AppItem(
       id: 8,
       name: 'Kaggle Profile',
-      url: 'https://kaggle.com',
+      url: 'https://www.kaggle.com/',
       description: 'Data science competitions & datasets',
       icon: Icons.bar_chart,
       color: Colors.indigo,
@@ -224,13 +216,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<AppItem> get filteredItems {
     return allItems.where((item) {
-      final matchesSearch =
-          item.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-              item.description
-                  .toLowerCase()
-                  .contains(_searchQuery.toLowerCase());
-      final matchesCategory =
-          _selectedCategory == 'All' || item.category == _selectedCategory;
+      final matchesSearch = item.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          item.description.toLowerCase().contains(_searchQuery.toLowerCase());
+      final matchesCategory = _selectedCategory == 'All' || item.category == _selectedCategory;
       return matchesSearch && matchesCategory;
     }).toList();
   }
@@ -263,8 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
-            transitionBuilder: (child, animation) =>
-                RotationTransition(turns: animation, child: child),
+            transitionBuilder: (child, animation) => RotationTransition(turns: animation, child: child),
             child: IconButton(
               key: ValueKey(widget.currentTheme),
               icon: Icon(
@@ -278,14 +265,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          // About Me Card - Updated with actual resume info
           Container(
             margin: const EdgeInsets.all(16),
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.red[800]!, Colors.red[600]!],
-              ),
+              gradient: LinearGradient(colors: [Colors.red[800]!, Colors.red[600]!]),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
@@ -332,10 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 6),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(8),
@@ -405,20 +386,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildStat(
-                  Icons.link,
-                  'Total',
-                  filteredItems.length.toString(),
-                  Colors.red[700]!,
-                  isDark,
-                ),
-                _buildStat(
-                  Icons.remove_red_eye,
-                  'Visits',
-                  totalVisits.toString(),
-                  Colors.red[700]!,
-                  isDark,
-                ),
+                _buildStat(Icons.link, 'Total', filteredItems.length.toString(), Colors.red[700]!, isDark),
+                _buildStat(Icons.remove_red_eye, 'Visits', totalVisits.toString(), Colors.red[700]!, isDark),
               ],
             ),
           ),
@@ -432,20 +401,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   )
                 : GridView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
                       childAspectRatio: 0.85,
                     ),
                     itemCount: filteredItems.length,
-                    itemBuilder: (context, index) =>
-                        _buildCard(filteredItems[index], isDark),
+                    itemBuilder: (context, index) => _buildCard(filteredItems[index], isDark),
                   ),
           ),
         ],
@@ -453,13 +417,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildStat(
-    IconData icon,
-    String label,
-    String value,
-    Color color,
-    bool isDark,
-  ) {
+  Widget _buildStat(IconData icon, String label, String value, Color color, bool isDark) {
     return Column(
       children: [
         Container(
@@ -473,18 +431,11 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 4),
         Text(
           value,
-          style: TextStyle(
-            color: color,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
+          style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         Text(
           label,
-          style: TextStyle(
-            color: isDark ? Colors.white60 : Colors.black54,
-            fontSize: 11,
-          ),
+          style: TextStyle(color: isDark ? Colors.white60 : Colors.black54, fontSize: 11),
         ),
       ],
     );
@@ -504,10 +455,7 @@ class _HomeScreenState extends State<HomeScreen> {
             borderRadius: BorderRadius.circular(16),
             gradient: item.badge != null
                 ? LinearGradient(
-                    colors: [
-                      item.color.withOpacity(0.05),
-                      item.color.withOpacity(0.1),
-                    ],
+                    colors: [item.color.withOpacity(0.05), item.color.withOpacity(0.1)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   )
@@ -531,10 +479,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Spacer(),
                     if (item.badge != null)
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 2,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: item.color,
                           borderRadius: BorderRadius.circular(8),
