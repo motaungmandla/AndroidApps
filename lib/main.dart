@@ -1,79 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:share_plus/share_plus.dart';
 
 void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => VisitTracker()),
-      ],
-      child: const AllianceDemoHub(),
-    ),
-  );
+  runApp(const AllianceDemoHub());
 }
 
-class AllianceDemoHub extends StatelessWidget {
+class AllianceDemoHub extends StatefulWidget {
   const AllianceDemoHub({super.key});
 
   @override
+  State<AllianceDemoHub> createState() => _AllianceDemoHubState();
+}
+
+class _AllianceDemoHubState extends State<AllianceDemoHub> {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  void toggleTheme() {
+    setState(() {
+      _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-      builder: (context, themeProvider, child) {
-        return MaterialApp(
-          title: 'Alliance Demo Hub',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primarySwatch: Colors.red,
-            primaryColor: Colors.red[700],
-            useMaterial3: true,
-            scaffoldBackgroundColor: Colors.white,
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.red[700]!,
-              primary: Colors.red[700]!,
-              secondary: Colors.red[400]!,
-            ),
-            appBarTheme: AppBarTheme(
-              backgroundColor: Colors.red[700],
-              foregroundColor: Colors.white,
-              elevation: 0,
-            ),
-            // ✅ FIXED: CardTheme (NOT CardThemeData)
-            cardTheme: CardTheme(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
+    return MaterialApp(
+      title: 'Alliance Demo Hub',
+      debugShowCheckedModeBanner: false,
+      themeMode: _themeMode,
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+        primaryColor: Colors.red[700],
+        useMaterial3: true,
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.red[700]!,
+          primary: Colors.red[700]!,
+          secondary: Colors.red[400]!,
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.red[700],
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+        cardTheme: CardTheme(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          darkTheme: ThemeData.dark().copyWith(
-            scaffoldBackgroundColor: const Color(0xFF121212),
-            cardColor: const Color(0xFF1E1E1E),
-            primaryColor: Colors.red[700],
-            colorScheme: ColorScheme.dark(
-              primary: Colors.red[400]!,
-              secondary: Colors.red[300]!,
-            ),
-            appBarTheme: const AppBarTheme(
-              backgroundColor: Color(0xFF8B0000),
-              foregroundColor: Colors.white,
-              elevation: 0,
-            ),
-            
-            cardTheme: CardTheme(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
+        ),
+      ),
+      darkTheme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        cardColor: const Color(0xFF1E1E1E),
+        primaryColor: Colors.red[700],
+        colorScheme: ColorScheme.dark(
+          primary: Colors.red[400]!,
+          secondary: Colors.red[300]!,
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF8B0000),
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+        cardTheme: CardTheme(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          themeMode: themeProvider.themeMode,
-          home: const HomeScreen(),
-        );
-      },
+        ),
+      ),
+      home: HomeScreen(onToggleTheme: toggleTheme),
     );
   }
 }
@@ -101,47 +98,19 @@ class Website {
   });
 }
 
-// ===== VISIT TRACKER =====
-class VisitTracker with ChangeNotifier {
-  int totalVisits = 0;
-  int totalShares = 0;
-  int totalCopies = 0;
-
-  void recordVisit() {
-    totalVisits++;
-    notifyListeners();
-  }
-
-  void recordShare() {
-    totalShares++;
-    notifyListeners();
-  }
-
-  void recordCopy() {
-    totalCopies++;
-    notifyListeners();
-  }
-}
-
-// ===== THEME PROVIDER =====
-class ThemeProvider with ChangeNotifier {
-  ThemeMode _themeMode = ThemeMode.light;
-  ThemeMode get themeMode => _themeMode;
-
-  void toggleTheme() {
-    _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    notifyListeners();
-  }
-}
-
 // ===== HOME SCREEN =====
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final VoidCallback onToggleTheme;
+  const HomeScreen({super.key, required this.onToggleTheme});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int totalVisits = 0;
+  int totalCopies = 0;
+
   final List<Website> websites = [
     Website(
       id: 0,
@@ -185,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Website(
       id: 4,
       name: 'ASR Project',
-      url: 'https://youtu.be/GoXAQVTiv8Q?si=6CtfyvFk3OLDCznz', // Consider updating this if it was a duplicate
+      url: 'https://youtu.be/GoXAQVTiv8Q?si=6CtfyvFk3OLDCznz', 
       description: 'Sesotho speech recognition - seeking funding to deploy for our nation',
       icon: Icons.mic,
       color: Colors.orange,
@@ -212,33 +181,30 @@ class _HomeScreenState extends State<HomeScreen> {
       category: 'Development',
       badge: 'API Demo',
     ),
-    // ✅ NEW: Lucky Bets Development Demo
     Website(
       id: 7,
       name: 'Lucky Bets Dev Demo',
       url: 'https://youtu.be/_gURXvlqRBc?si=X5WDj48xDzDm04fR',
-      description: 'Full-stack development demo showcasing real-time state management and UI responsiveness.',
+      description: 'Full-stack development demo showcasing real-time state management.',
       icon: Icons.casino,
       color: Colors.amber[700]!,
       category: 'Development',
       badge: 'Live Demo',
     ),
-    // ✅ NEW: Coin Tossing Demo
     Website(
       id: 8,
       name: 'Coin Tossing Demo',
       url: 'https://youtu.be/o3DjSXh-t_A?si=JG_vREmiP7GIGG0N',
-      description: 'Interactive probabilistic simulation demonstrating clean architecture and smooth animations.',
+      description: 'Interactive probabilistic simulation demonstrating clean architecture.',
       icon: Icons.flip,
       color: Colors.blueGrey,
       category: 'Development',
     ),
-    // ✅ NEW: Horse Racing Demo
     Website(
       id: 9,
       name: 'Horse Racing Demo',
       url: 'https://youtu.be/q5MzADBpOSA?si=5YdfZfcQBXfy-ffi',
-      description: 'Dynamic UI and event-driven architecture demonstration with real-time visual updates.',
+      description: 'Dynamic UI and event-driven architecture demonstration.',
       icon: Icons.sports_score,
       color: Colors.teal,
       category: 'Development',
@@ -266,9 +232,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tracker = Provider.of<VisitTracker>(context);
-    final themeProvider = Provider.of<ThemeProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -287,9 +250,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(themeProvider.themeMode == ThemeMode.dark 
-                ? Icons.wb_sunny : Icons.nightlight),
-            onPressed: () => themeProvider.toggleTheme(),
+            icon: Icon(_themeMode == ThemeMode.dark ? Icons.wb_sunny : Icons.nightlight),
+            onPressed: widget.onToggleTheme,
           ),
         ],
       ),
@@ -341,8 +303,8 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildStat(Icons.link, 'Demos', websites.length.toString(), Colors.red[700]!),
-                _buildStat(Icons.remove_red_eye, 'Visits', tracker.totalVisits.toString(), Colors.red[700]!),
-                _buildStat(Icons.share, 'Shares', tracker.totalShares.toString(), Colors.red[700]!),
+                _buildStat(Icons.remove_red_eye, 'Visits', totalVisits.toString(), Colors.red[700]!),
+                _buildStat(Icons.content_copy, 'Copies', totalCopies.toString(), Colors.red[700]!),
               ],
             ),
           ),
@@ -358,7 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 childAspectRatio: 0.85,
               ),
               itemCount: websites.length,
-              itemBuilder: (context, index) => _buildCard(websites[index], tracker),
+              itemBuilder: (context, index) => _buildCard(websites[index]),
             ),
           ),
         ],
@@ -384,13 +346,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildCard(Website site, VisitTracker tracker) {
+  Widget _buildCard(Website site) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         onTap: () async {
-          tracker.recordVisit();
+          setState(() => totalVisits++);
           await _launchUrl(site.url);
         },
         borderRadius: BorderRadius.circular(16),
@@ -448,7 +410,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Text(site.category,
                           style: TextStyle(color: Colors.grey[500], fontSize: 10, fontWeight: FontWeight.w500)),
                     ),
-                    // ✅ COPY BUTTON
+                    // ✅ COPY BUTTON (Built-in, no external package needed)
                     IconButton(
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
@@ -456,7 +418,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: Icon(Icons.content_copy, size: 16, color: Colors.grey[600]),
                       onPressed: () async {
                         await Clipboard.setData(ClipboardData(text: site.url));
-                        tracker.recordCopy();
+                        setState(() => totalCopies++);
                         if (mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -469,19 +431,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         }
                       },
                     ),
-                    // ✅ SHARE BUTTON
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(),
-                      splashRadius: 18,
-                      icon: Icon(Icons.share, size: 16, color: Colors.grey[600]),
-                      onPressed: () {
-                        tracker.recordShare();
-                        Share.share(
-                          'Check out ${site.name}: ${site.url}\n\nPart of Motaung Mandla\'s Alliance Insurance application portfolio.',
-                        );
-                      },
-                    ),
                   ],
                 ),
               ],
@@ -492,7 +441,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ✅ Launch URL with url_launcher
   Future<void> _launchUrl(String urlString) async {
     try {
       final uri = Uri.parse(urlString.trim());
