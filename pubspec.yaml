@@ -10,7 +10,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  url_launcher: ^6.2.4  # ✅ Only essential external dependency allowed
 
 dev_dependencies:
   flutter_test:
