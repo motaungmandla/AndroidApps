@@ -185,14 +185,13 @@ class _HomeScreenState extends State<HomeScreen> {
     Website(
       id: 4,
       name: 'ASR Project',
-      url: 'https://youtu.be/GoXAQVTiv8Q?si=6CtfyvFk3OLDCznz',
+      url: 'https://youtu.be/GoXAQVTiv8Q?si=6CtfyvFk3OLDCznz', // Consider updating this if it was a duplicate
       description: 'Sesotho speech recognition - seeking funding to deploy for our nation',
       icon: Icons.mic,
       color: Colors.orange,
       category: 'AI/ML',
       badge: 'Needs Support',
     ),
-    // ✅ SeSoDa Dataset - YOUR PAPER LINK
     Website(
       id: 5,
       name: 'SeSoDa Dataset',
@@ -213,8 +212,40 @@ class _HomeScreenState extends State<HomeScreen> {
       category: 'Development',
       badge: 'API Demo',
     ),
+    // ✅ NEW: Lucky Bets Development Demo
     Website(
       id: 7,
+      name: 'Lucky Bets Dev Demo',
+      url: 'https://youtu.be/_gURXvlqRBc?si=X5WDj48xDzDm04fR',
+      description: 'Full-stack development demo showcasing real-time state management and UI responsiveness.',
+      icon: Icons.casino,
+      color: Colors.amber[700]!,
+      category: 'Development',
+      badge: 'Live Demo',
+    ),
+    // ✅ NEW: Coin Tossing Demo
+    Website(
+      id: 8,
+      name: 'Coin Tossing Demo',
+      url: 'https://youtu.be/o3DjSXh-t_A?si=JG_vREmiP7GIGG0N',
+      description: 'Interactive probabilistic simulation demonstrating clean architecture and smooth animations.',
+      icon: Icons.flip,
+      color: Colors.blueGrey,
+      category: 'Development',
+    ),
+    // ✅ NEW: Horse Racing Demo
+    Website(
+      id: 9,
+      name: 'Horse Racing Demo',
+      url: 'https://youtu.be/q5MzADBpOSA?si=5YdfZfcQBXfy-ffi',
+      description: 'Dynamic UI and event-driven architecture demonstration with real-time visual updates.',
+      icon: Icons.sports_score,
+      color: Colors.teal,
+      category: 'Development',
+      badge: 'Interactive',
+    ),
+    Website(
+      id: 10,
       name: 'GitHub Profile',
       url: 'https://github.com/motaungmandla',
       description: 'Open source projects & AI models',
@@ -223,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
       category: 'Development',
     ),
     Website(
-      id: 8,
+      id: 11,
       name: 'Contact Me',
       url: 'mailto:maxphin21@gmail.com',
       description: 'Let\'s discuss how I can add value to Alliance',
