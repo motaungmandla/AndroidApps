@@ -1,6 +1,7 @@
-name: Motaung_demo
-description: "Motaung Mandla Portfolio"
+name: motaung_demo
+description: A portfolio demo hub for Alliance Insurance.
 publish_to: 'none'
+
 version: 1.0.0+1
 
 environment:
@@ -9,17 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # ✅ State Management
-  provider: ^6.1.1
-  # ✅ Launch external URLs
-  url_launcher: ^6.2.4
-  # ✅ Native sharing
-  share_plus: ^7.2.1
+  url_launcher: ^6.2.4  # ✅ Only essential external dependency allowed
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.1
-
-flutter:
-  uses-material-design: true
