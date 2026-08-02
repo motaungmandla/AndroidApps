@@ -365,29 +365,34 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ✅ ROBUST URL LAUNCHER
+    // ✅ PROPER URL LAUNCHER (Opens in browser)
   Future<void> _launchUrl(String urlString) async {
     try {
       final uri = Uri.parse(urlString.trim());
-      if (uri.scheme.isEmpty) throw Exception('Invalid URL');
+      
+      // Validate the URL scheme
+      if (!uri.hasScheme) {
+        throw Exception('Invalid URL: missing scheme (http/https)');
+      }
       
       if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication, // Opens in user's default browser
+        );
       } else {
-        // Fallback: Copy to clipboard if launching fails
-        await Clipboard.setData(ClipboardData(text: urlString));
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Could not open. Link copied to clipboard!'), backgroundColor: Colors.orange[800]),
-          );
-        }
+        // Fallback: Try platform default if canLaunchUrl fails
+        await launchUrl(uri, mode: LaunchMode.platformDefault);
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}'), backgroundColor: Colors.red[700]),
-        );
-      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Could not open link: ${e.toString()}'),
+          backgroundColor: Colors.red[700],
+          duration: const Duration(seconds: 3),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
-}
