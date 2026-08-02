@@ -29,11 +29,29 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Show Flutter info
+        run: |
+          flutter doctor -v
+          flutter --version
+
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get
+          echo "Dependencies installed successfully"
+
+      - name: Analyze code
+        run: |
+          flutter analyze || echo "Analysis warnings (non-fatal)"
 
       - name: Build Web
-        run: flutter build web --release
+        run: |
+          flutter build web --release --verbose
+          echo "Build completed"
+          
+      - name: Verify build output
+        run: |
+          ls -la build/web/
+          echo "Build output verified"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
