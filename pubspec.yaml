@@ -1,5 +1,5 @@
-name: motaung_demo
-description: A portfolio demo hub for Alliance Insurance.
+name: motaung_hub
+description: A personal portfolio and app hub by Mandla Motaung.
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  url_launcher: ^6.3.0  # ✅ Restored for actual URL launching
 
 dev_dependencies:
   flutter_test:
