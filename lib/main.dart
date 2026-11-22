@@ -60,7 +60,6 @@ class HubHomeScreen extends StatefulWidget {
 }
 
 class _HubHomeScreenState extends State<HubHomeScreen> {
-  // Switch between the Portfolio Hub view and the Embedded LuckyBets View
   bool _isLuckyBetsOpen = false;
 
   @override
@@ -76,7 +75,7 @@ class _HubHomeScreenState extends State<HubHomeScreen> {
         }
       },
       child: Scaffold(
-        appAppBar: AppBar(
+        appBar: AppBar( // ✅ Fixed appAppBar -> appBar
           backgroundColor: HubColors.obsidianBlack,
           elevation: 0,
           scrolledUnderElevation: 0,
@@ -105,7 +104,7 @@ class _HubHomeScreenState extends State<HubHomeScreen> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: HubColors.electricYellow.withValues(alpha: 0.6),
+                      color: HubColors.electricYellow.withOpacity(0.6), // ✅ Fixed withValues -> withOpacity
                       blurRadius: 8,
                       spreadRadius: 1,
                     ),
@@ -152,10 +151,10 @@ class _HubHomeScreenState extends State<HubHomeScreen> {
                 margin: const EdgeInsets.only(right: 16),
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: HubColors.liveEmerald.withValues(alpha: 0.15),
+                  color: HubColors.liveEmerald.withOpacity(0.15), // ✅ Fixed withValues -> withOpacity
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: HubColors.liveEmerald.withValues(alpha: 0.4),
+                    color: HubColors.liveEmerald.withOpacity(0.4), // ✅ Fixed withValues -> withOpacity
                   ),
                 ),
                 child: Row(
@@ -197,7 +196,6 @@ class _HubHomeScreenState extends State<HubHomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Hero Welcome Card
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
@@ -279,8 +277,6 @@ class _HubHomeScreenState extends State<HubHomeScreen> {
             ),
           ),
           const SizedBox(height: 12),
-
-          // In-App LuckyBets Launcher Card
           _buildAppCard(
             context,
             title: 'LuckyBets Lesotho',
@@ -344,10 +340,10 @@ class _HubHomeScreenState extends State<HubHomeScreen> {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: badgeColor.withValues(alpha: 0.15),
+                        color: badgeColor.withOpacity(0.15), // ✅ Fixed withValues -> withOpacity
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: badgeColor.withValues(alpha: 0.4),
+                          color: badgeColor.withOpacity(0.4), // ✅ Fixed withValues -> withOpacity
                         ),
                       ),
                       child: Text(
@@ -407,7 +403,6 @@ class _HubHomeScreenState extends State<HubHomeScreen> {
   }
 }
 
-/// Standalone WebView Screen Widget handling the direct link inside the app
 class LuckyBetsWebViewScreen extends StatefulWidget {
   const LuckyBetsWebViewScreen({super.key});
 
