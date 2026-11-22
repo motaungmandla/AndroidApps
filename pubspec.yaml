@@ -1,4 +1,4 @@
-name: luckybets 
+name: luckybets
 description: LuckyBets Lesotho - Play. Bet. Win Big.
 publish_to: 'none'
 version: 1.0.0+1
@@ -9,13 +9,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  webview_flutter: ^4.13.0
+  webview_flutter: ^4.10.0  # ✅ Compatible with Dart 3.5.0
   url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0   # ✅ Compatible with SDK 3.x without forcing Dart 3.8+
+  flutter_lints: ^3.0.1     # ✅ Compatible with SDK 3.x
 
 flutter:
   uses-material-design: true
