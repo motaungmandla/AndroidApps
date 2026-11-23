@@ -1,9 +1,12 @@
-name: Flutter Build & Deploy
+```yaml
+name: LuckyBets Build & Deploy
 
 on:
   push:
     branches:
       - main
+
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -11,22 +14,22 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: luckybets-pages
   cancel-in-progress: true
 
 jobs:
   build:
+    name: Build Android APK and Web
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ✅ CRITICAL: Set up Java 17 so Gradle builds the Android APK without version errors
       - name: Set up Java JDK
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: zulu
           java-version: '17'
 
       - name: Setup Flutter
@@ -39,35 +42,42 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build Web (for GitHub Pages)
-        run: flutter build web --release
+      - name: Check Flutter
+        run: flutter doctor -v
 
-      - name: Build APK (for Android download)
+      - name: Build Android APK
         run: flutter build apk --release
 
-      - name: Setup Pages
+      - name: Build Web for GitHub Pages
+        run: flutter build web --release
+
+      - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload web artifact
+      - name: Upload Web artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './build/web'
+          path: build/web
 
-      - name: Upload APK artifact
+      - name: Upload Android APK
         uses: actions/upload-artifact@v4
         with:
-          name: motaung-hub-apk
+          name: LuckyBets-Android-APK
           path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 30
 
   deploy:
+    name: Deploy GitHub Pages
     needs: build
     runs-on: ubuntu-latest
-    
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    
+
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+```
